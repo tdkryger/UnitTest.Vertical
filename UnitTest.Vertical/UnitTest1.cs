@@ -68,7 +68,7 @@ namespace UnitTest.Vertical
             {
                 result = cis.CreateCustomer(cust);
             }
-            catch(Contract.eto.CustomerNotFoundException)
+            catch (Contract.eto.CustomerNotFoundException)
             {
                 Assert.Fail("CustomerNotFoundException");
             }
@@ -331,7 +331,7 @@ namespace UnitTest.Vertical
             {
                 result = ais.DeleteFerry(newFerry);
             }
-            catch(Contract.eto.FerryNotFoundException)
+            catch (Contract.eto.FerryNotFoundException)
             {
                 Assert.Fail("FerryNotFoundException");
             }
@@ -448,8 +448,315 @@ namespace UnitTest.Vertical
             Assert.IsTrue(result);
         }
 
+        [TestMethod]
+        public void AdminstrationContractCreateTrip()
+        {
+            Contract.contract.AdminstrationContract ais = getAdministrationContract();
 
+            Contract.dto.Trip trip = new Contract.dto.Trip()
+            {
+                FerryId = 1,
+                Price = 2.25,
+                RouteId = 1,
+                TripId = 1
+            };
 
+            Contract.dto.Trip returnTrip = null;
+            try
+            {
+                returnTrip = ais.CreateTrip(trip);
+            }
+            catch (Contract.eto.FerryNotFoundException)
+            {
+                Assert.Fail("FerryNotFoundException");
+            }
+            catch (Contract.eto.RouteNotFoundException)
+            {
+                Assert.Fail("RouteNotFoundException");
+            }
+
+            Assert.AreEqual<Contract.dto.Trip>(trip, returnTrip);
+        }
+
+        [TestMethod]
+        public void AdminstrationContractGetTrip()
+        {
+            Contract.contract.AdminstrationContract ais = getAdministrationContract();
+            Contract.dto.Trip trip = null;
+            try
+            {
+                trip = ais.GetTrip("anders@and.com");
+            }
+            catch (Contract.eto.TripNotFoundException)
+            {
+                Assert.Fail("TripNotFoundException");
+            }
+            Assert.IsNotNull(trip);
+        }
+
+        [TestMethod]
+        public void AdminstrationContractUpdateTrip()
+        {
+            Contract.contract.AdminstrationContract ais = getAdministrationContract();
+            Contract.dto.Trip trip = null;
+            try
+            {
+                trip = ais.GetTrip("anders@and.com");
+            }
+            catch (Contract.eto.TripNotFoundException)
+            {
+                Assert.Fail("TripNotFoundException");
+            }
+
+            trip.Price++;
+            Contract.dto.Trip returnTrip = null;
+            try
+            {
+                returnTrip = ais.UpdateTrip(trip);
+            }
+            catch (Contract.eto.TripNotFoundException)
+            {
+                Assert.Fail("TripNotFoundException");
+            }
+
+            Assert.AreEqual<Contract.dto.Trip>(trip, returnTrip);
+        }
+
+        [TestMethod]
+        public void AdminstrationContractDeleteTrip()
+        {
+            Contract.contract.AdminstrationContract ais = getAdministrationContract();
+            Contract.dto.Trip trip = null;
+            try
+            {
+                trip = ais.GetTrip("anders@and.com");
+            }
+            catch (Contract.eto.TripNotFoundException)
+            {
+                Assert.Fail("TripNotFoundException");
+            }
+            bool result = false;
+            try
+            {
+                result = ais.DeleteTrip(trip);
+            }
+            catch (Contract.eto.TripNotFoundException)
+            {
+                Assert.Fail("TripNotFoundException");
+            }
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void AdminstrationContractCreateVehicle()
+        {
+            Contract.contract.AdminstrationContract ais = getAdministrationContract();
+
+            Contract.dto.Vehicle vehicle = new Contract.dto.Vehicle()
+            {
+                VehicleId = 1,
+                VehicleSize = 1,
+                VehicleType = "M109"
+            };
+
+            Contract.dto.Vehicle returnVehicle = null;
+            returnVehicle = ais.CreateVehicle(vehicle);
+
+            Assert.AreEqual<Contract.dto.Vehicle>(vehicle, returnVehicle);
+
+        }
+
+        [TestMethod]
+        public void AdminstrationContractGetVehicle()
+        {
+            Contract.contract.AdminstrationContract ais = getAdministrationContract();
+            Contract.dto.Vehicle item = null;
+            try
+            {
+                item = ais.GetVehicle("anders@and.com");
+            }
+            catch (Contract.eto.VehicleNotFoundException)
+            {
+                Assert.Fail("VehicleNotFoundException");
+            }
+            Assert.IsNotNull(item);
+        }
+
+        [TestMethod]
+        public void AdminstrationContractUpdateVehicle()
+        {
+            Contract.contract.AdminstrationContract ais = getAdministrationContract();
+            Contract.dto.Vehicle item = null;
+            try
+            {
+                item = ais.GetVehicle("anders@and.com");
+            }
+            catch (Contract.eto.VehicleNotFoundException)
+            {
+                Assert.Fail("VehicleNotFoundException");
+            }
+
+            item.VehicleSize++;
+            Contract.dto.Vehicle returnItem = null;
+            try
+            {
+                returnItem = ais.UpdateVehicle(item);
+            }
+            catch (Contract.eto.VehicleNotFoundException)
+            {
+                Assert.Fail("VehicleNotFoundException");
+            }
+
+            Assert.AreEqual(item.VehicleSize, returnItem.VehicleSize);
+        }
+
+        [TestMethod]
+        public void AdminstrationContractDeleteVehicle()
+        {
+            Contract.contract.AdminstrationContract ais = getAdministrationContract();
+            Contract.dto.Vehicle item = null;
+            try
+            {
+                item = ais.GetVehicle("anders@and.com");
+            }
+            catch (Contract.eto.VehicleNotFoundException)
+            {
+                Assert.Fail("VehicleNotFoundException");
+            }
+            bool returnValue = false;
+            try
+            {
+                returnValue = ais.DeleteVehicle(item);
+            }
+            catch (Contract.eto.VehicleNotFoundException)
+            {
+                Assert.Fail("VehicleNotFoundException");
+            }
+            Assert.IsTrue(returnValue);
+        }
+
+        [TestMethod]
+        public void AdminstrationContractCreateRoute()
+        {
+            Contract.contract.AdminstrationContract ais = getAdministrationContract();
+            // So where do we Depart FROM?
+            Contract.dto.Route item = new Contract.dto.Route()
+            {
+                Depature = DateTime.Now,
+                Destination = "Somewhere else than here",
+                Duration = 900
+            };
+
+            Contract.dto.Route returnItem = null;
+            returnItem = ais.CreateRoute(item);
+
+            Assert.AreEqual<Contract.dto.Route>(item, returnItem);
+        }
+
+        [TestMethod]
+        public void AdminstrationContractGetRoute()
+        {
+            Contract.contract.AdminstrationContract ais = getAdministrationContract();
+            Contract.dto.Route item = null;
+            try
+            {
+                item = ais.GetRoute("anders@and.com");
+            }
+            catch (Contract.eto.RouteNotFoundException)
+            {
+                Assert.Fail("RouteNotFoundException");
+            }
+            Assert.IsNotNull(item);
+        }
+
+        [TestMethod]
+        public void AdminstrationContractUpdateRoute()
+        {
+            Contract.contract.AdminstrationContract ais = getAdministrationContract();
+            Contract.dto.Route item = null;
+            try
+            {
+                item = ais.GetRoute("anders@and.com");
+            }
+            catch (Contract.eto.RouteNotFoundException)
+            {
+                Assert.Fail("RouteNotFoundException");
+            }
+
+            item.Duration++;
+            Contract.dto.Route returnItem = null;
+            try
+            {
+                returnItem = ais.UpdateRoute(item);
+            }
+            catch (Contract.eto.RouteNotFoundException)
+            {
+                Assert.Fail("RouteNotFoundException");
+            }
+
+            Assert.AreEqual(item.Duration, returnItem.Duration);
+        }
+
+        [TestMethod]
+        public void AdminstrationContractDeleteRoute()
+        {
+            Contract.contract.AdminstrationContract ais = getAdministrationContract();
+            Contract.dto.Route item = null;
+            try
+            {
+                item = ais.GetRoute("anders@and.com");
+            }
+            catch (Contract.eto.RouteNotFoundException)
+            {
+                Assert.Fail("RouteNotFoundException");
+            }
+
+            bool result = false;
+            try
+            {
+                result = ais.DeleteRoute(item);
+            }
+            catch(Contract.eto.RouteNotFoundException)
+            {
+                Assert.Fail("RouteNotFoundException");
+            }
+            Assert.IsTrue(result); 
+        }
+
+        [TestMethod]
+        public void AdminstrationContractGetCustomers()
+        {
+            Assert.Fail("Not in interface, but described in documentation");
+        }
+
+        [TestMethod]
+        public void AdminstrationContractGetFerries()
+        {
+            Assert.Fail("Not in interface, but described in documentation");
+        }
+
+        public void AdminstrationContractGetTrips()
+        {
+            Assert.Fail("Not in interface, but described in documentation");
+        }
+
+        [TestMethod]
+        public void AdminstrationContractGetReservations()
+        {
+            Assert.Fail("Not in interface, but described in documentation");
+        }
+
+        public void AdminstrationContractGetVehicles()
+        {
+            Assert.Fail("Not in interface, but described in documentation");
+        }
+
+        [TestMethod]
+        public void AdminstrationContractGetRoutes()
+        {
+            Assert.Fail("Not in interface, but described in documentation");
+        }
         #endregion
     }
 }

@@ -7,6 +7,9 @@ using Contract.dto;
 
 namespace UnitTest.Vertical
 {
+    /// <summary>
+    /// Stub for interface Contract.contract.CustomerContract
+    /// </summary>
     class CustomerInterfaceStub : Contract.contract.CustomerContract
     {
         public bool CancelCustomerReservation(Reservation reservation)

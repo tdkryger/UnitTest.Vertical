@@ -7,6 +7,9 @@ using Contract.dto;
 
 namespace UnitTest.Vertical
 {
+    /// <summary>
+    /// Stub for interface Contract.contract.AdminstrationContract
+    /// </summary>
     class AdministratorInterfaceStub : Contract.contract.AdminstrationContract
     {
         public Customer CreateCustomer(Customer customer)
