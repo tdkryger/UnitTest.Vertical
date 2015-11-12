@@ -4,9 +4,15 @@ using System.Collections.Generic;
 
 namespace UnitTest.Vertical
 {
+    /// <summary>
+    /// Note: Backend made this test, making educated guesses reguarding usage of exceptions.
+    /// XML documentation missing from Contract project
+    /// </summary>
     [TestClass]
     public class UnitTest1
     {
+
+
         private Contract.contract.CustomerContract getCustomerContract()
         {
             return new CustomerInterfaceStub();
@@ -16,6 +22,8 @@ namespace UnitTest.Vertical
         {
             return new AdministratorInterfaceStub();
         }
+
+        #region Tests for Contract.contract.CustomerContract
 
         [TestMethod]
         public void CustomerContractGetAllTrips()
@@ -55,9 +63,16 @@ namespace UnitTest.Vertical
             {
                 CustomerId = 1
             };
-            //backend: No special exception. 
-            bool result = cis.CreateCustomer(cust);
-            Assert.AreEqual(true, result);
+            bool result = false;
+            try
+            {
+                result = cis.CreateCustomer(cust);
+            }
+            catch(Contract.eto.CustomerNotFoundException)
+            {
+                Assert.Fail("CustomerNotFoundException");
+            }
+            Assert.IsTrue(result);
         }
 
         [TestMethod]
@@ -89,9 +104,9 @@ namespace UnitTest.Vertical
             }
             catch (Contract.eto.TripNotFoundException ex)
             {
-                Assert.Fail("Trip not found: "  + ex.Message);
+                Assert.Fail("Trip not found: " + ex.Message);
             }
-            catch(Contract.eto.CustomerNotFoundException ex)
+            catch (Contract.eto.CustomerNotFoundException ex)
             {
                 Assert.Fail("Customer not found: " + ex.Message);
             }
@@ -146,8 +161,295 @@ namespace UnitTest.Vertical
                     Assert.AreNotEqual(oldCount, resList.Count);
                 }
             }
-            
+
+        }
+        #endregion
+
+        #region Tests for Contract.contract.AdminstrationContract
+
+        /*
+            Backend: Not sure what to test in the Create-methods. Should there be a difference between the parameter and the return value?
+            Should we return an object so the frontend gets the id?
+
+            And why do all Get-methods have email as parameter? 
+        */
+
+        [TestMethod]
+        public void AdminstrationContractCreateCustomer()
+        {
+            Contract.contract.AdminstrationContract ais = getAdministrationContract();
+
+            Contract.dto.Customer newCustomer = new Contract.dto.Customer()
+            {
+                CustomerId = 1,
+                Mail = "anders@and.com"
+            };
+
+            // Backend question: What do we do if this fails? return null or some random exception?
+            Contract.dto.Customer returnValue = ais.CreateCustomer(newCustomer);
+
+            Assert.AreEqual<Contract.dto.Customer>(newCustomer, returnValue);
         }
 
+        [TestMethod]
+        public void AdminstrationContractGetCustomer()
+        {
+            Contract.contract.AdminstrationContract ais = getAdministrationContract();
+            Contract.dto.Customer customer = null;
+            try
+            {
+                customer = ais.GetCustomer("anders@and.com");
+            }
+            catch (Contract.eto.CustomerNotFoundException ex)
+            {
+                Assert.Fail("CustomerNotFoundException: " + ex.Message);
+            }
+            Assert.IsNotNull(customer);
+        }
+
+        [TestMethod]
+        public void AdminstrationContractUpdateCustomer()
+        {
+            Contract.contract.AdminstrationContract ais = getAdministrationContract();
+            Contract.dto.Customer customer = ais.GetCustomer("anders@and.com");
+            int oldValue = customer.AmountOfFreeRides;
+            customer.AmountOfFreeRides = customer.AmountOfFreeRides + 1;
+            try
+            {
+                customer = ais.UpdateCustomer(customer);
+            }
+            catch (Contract.eto.CustomerNotFoundException ex)
+            {
+                Assert.Fail("CustomerNotFoundException: " + ex.Message);
+            }
+
+            Assert.AreEqual(oldValue + 1, customer.AmountOfFreeRides);
+        }
+
+        [TestMethod]
+        public void AdminstrationContractDeleteCustomer()
+        {
+            Contract.contract.AdminstrationContract ais = getAdministrationContract();
+            Contract.dto.Customer customer = ais.GetCustomer("anders@and.com");
+            try
+            {
+                ais.DeleteCustomer(customer);
+            }
+            catch (Contract.eto.CustomerNotFoundException ex)
+            {
+                Assert.Fail("CustomerNotFoundException: " + ex.Message);
+            }
+            try
+            {
+                customer = ais.GetCustomer("anders@and.com");
+            }
+            catch (Contract.eto.CustomerNotFoundException ex)
+            {
+                customer = null;
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail(ex.Message);
+            }
+            Assert.IsNull(customer);
+        }
+
+        [TestMethod]
+        public void AdminstrationContractCreateFerry()
+        {
+            Contract.contract.AdminstrationContract ais = getAdministrationContract();
+            Contract.dto.Ferry newFerry = new Contract.dto.Ferry()
+            {
+                DockId = 1, // What is this? A secret class?
+                FerryId = 1,
+                Municipality = "Andeby",
+                Name = "Hugo",
+                PassengerCapacity = 7,
+                Size = "VERY BIG"
+            };
+            // Backend: Since we have no exceptions in eto to throw, we just return null if something went wrong?
+            Contract.dto.Ferry returnValue = ais.CreateFerry(newFerry);
+
+            Assert.AreEqual<Contract.dto.Ferry>(newFerry, returnValue);
+        }
+
+        [TestMethod]
+        public void AdminstrationContractGetFerry()
+        {
+            Contract.contract.AdminstrationContract ais = getAdministrationContract();
+
+
+            Contract.dto.Ferry newFerry = null;
+            try
+            {
+                //Backend: So a ferry have an email? 
+                //Its missing in the DTO... 
+                //so we cant save it. 
+                //you can create millions of ferrys, but GetFerry will always fail...
+                newFerry = ais.GetFerry("anders@and.com");
+            }
+            catch (Contract.eto.FerryNotFoundException ex)
+            {
+                Assert.Fail("FerryNotFoundException: " + ex.Message);
+            }
+            Assert.IsNotNull(newFerry);
+        }
+
+        [TestMethod]
+        public void AdminstrationContractUpdateFerry()
+        {
+            Contract.contract.AdminstrationContract ais = getAdministrationContract();
+
+
+            Contract.dto.Ferry newFerry = null;
+            try
+            {
+                //Backend: So a ferry have an email? 
+                //Its missing in the DTO... 
+                //so we cant save it. 
+                //you can create millions of ferrys, but GetFerry will always fail...
+                newFerry = ais.GetFerry("anders@and.com");
+            }
+            catch (Contract.eto.FerryNotFoundException ex)
+            {
+                Assert.Fail("FerryNotFoundException: " + ex.Message);
+            }
+            int oldValue = newFerry.PassengerCapacity;
+            newFerry.PassengerCapacity++;
+            Contract.dto.Ferry returnValue = ais.UpdateFerry(newFerry);
+
+            Assert.AreEqual(oldValue + 1, returnValue.PassengerCapacity);
+        }
+
+        [TestMethod]
+        public void AdminstrationContractDeleteFerry()
+        {
+            Contract.contract.AdminstrationContract ais = getAdministrationContract();
+            Contract.dto.Ferry newFerry = ais.GetFerry("anders@and.com");
+            bool result = false;
+            try
+            {
+                result = ais.DeleteFerry(newFerry);
+            }
+            catch(Contract.eto.FerryNotFoundException)
+            {
+                Assert.Fail("FerryNotFoundException");
+            }
+            Assert.IsTrue(result);
+        }
+
+
+        [TestMethod]
+        public void AdminstrationContractCreateReservation()
+        {
+            Contract.contract.AdminstrationContract ais = getAdministrationContract();
+
+            Contract.dto.Reservation reservation = new Contract.dto.Reservation()
+            {
+                TripId = 1,
+                CustomerId = 1,
+                NumberOfPeople = 900,
+                ReservationId = 43,
+                TotalPrice = 500000.47,
+                VehicleId = 12
+            };
+
+            Contract.dto.Reservation resultReservation = null;
+            try
+            {
+                resultReservation = ais.CreateReservation(reservation);
+            }
+            catch (Contract.eto.CustomerNotFoundException)
+            {
+                Assert.Fail("CustomerNotFoundException");
+            }
+            catch (Contract.eto.TripNotFoundException)
+            {
+                Assert.Fail("TripNotFoundException");
+            }
+            catch (Contract.eto.VehicleNotFoundException)
+            {
+                Assert.Fail("VehicleNotFoundException");
+            }
+
+            Assert.AreEqual<Contract.dto.Reservation>(reservation, resultReservation);
+        }
+
+        [TestMethod]
+        public void AdminstrationContractGetReservation()
+        {
+            Contract.contract.AdminstrationContract ais = getAdministrationContract();
+
+            Contract.dto.Reservation reservation = null;
+            try
+            {
+                reservation = ais.GetReservation("anders@and.com");
+            }
+            catch (Contract.eto.ReservationNotFoundException)
+            {
+                Assert.Fail("ReservationNotFoundException");
+            }
+
+            Assert.IsNotNull(reservation);
+
+        }
+
+        [TestMethod]
+        public void AdminstrationContractUpdateReservation()
+        {
+            Contract.contract.AdminstrationContract ais = getAdministrationContract();
+
+            Contract.dto.Reservation reservation = null;
+            try
+            {
+                reservation = ais.GetReservation("anders@and.com");
+            }
+            catch (Contract.eto.ReservationNotFoundException)
+            {
+                Assert.Fail("ReservationNotFoundException");
+            }
+            reservation.TotalPrice++;
+            Contract.dto.Reservation resultReservation = null;
+            try
+            {
+                resultReservation = ais.UpdateReservation(reservation);
+            }
+            catch (Contract.eto.ReservationNotFoundException)
+            {
+                Assert.Fail("ReservationNotFoundException");
+            }
+            Assert.AreEqual(reservation.TotalPrice, resultReservation.TotalPrice);
+        }
+
+        [TestMethod]
+        public void AdminstrationContractDeleteReservation()
+        {
+            Contract.contract.AdminstrationContract ais = getAdministrationContract();
+
+            Contract.dto.Reservation reservation = null;
+            try
+            {
+                reservation = ais.GetReservation("anders@and.com");
+            }
+            catch (Contract.eto.ReservationNotFoundException)
+            {
+                Assert.Fail("ReservationNotFoundException");
+            }
+
+            bool result = false;
+            try
+            {
+                result = ais.DeleteReservation(reservation);
+            }
+            catch (Contract.eto.ReservationNotFoundException)
+            {
+                Assert.Fail("ReservationNotFoundException");
+            }
+            Assert.IsTrue(result);
+        }
+
+
+
+        #endregion
     }
 }
