@@ -36,7 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Contract">
-      <HintPath>C:\Users\thomas\Source\Repos\Contract\Contract\bin\Debug\Contract.dll</HintPath>
+      <HintPath>..\..\Contract\Contract\bin\Debug\Contract.dll</HintPath>
     </Reference>
     <Reference Include="System" />
   </ItemGroup>

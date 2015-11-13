@@ -28,10 +28,12 @@ namespace UnitTest.Vertical
         [TestMethod]
         public void CustomerContractGetAllTrips()
         {
-            List<Contract.dto.Trip> tripList = new List<Contract.dto.Trip>();
+            List<Contract.dto.Trip> tripList = null;
             Contract.contract.CustomerContract cis = getCustomerContract();
-            // backend says: We dont know if the frontend wants us to thrown any specific
+            // Question: We dont know if the frontend wants us to thrown any specific
             tripList = cis.GetAllTrips();
+            if (tripList == null)
+                Assert.Fail("GetAllTrips return a null");
             Assert.AreNotEqual(0, tripList.Count);
         }
 
@@ -81,19 +83,18 @@ namespace UnitTest.Vertical
             Contract.contract.CustomerContract cis = getCustomerContract();
             Contract.contract.AdminstrationContract ais = getAdministrationContract();
 
-            // This will be a long list after a few days.
-            // A parameter to indicate route and/or date and time?
+            // Question: This will be a long list after a few days. A parameter to indicate route and/or date and time?
             List<Contract.dto.Trip> tripList = cis.GetAllTrips();
 
             Contract.dto.Trip trip = tripList[0];
 
-            //So the CustomerFrontend saves the username and password... That sound extremly safe.. maybe use the email since that should be unique?
+            //Question: So the CustomerFrontend saves the username and password... That sound extremly safe.. maybe use the email since that should be unique?
             Contract.dto.Customer customer = cis.GetCustomerByLogin("anders", "and");
 
             double totalPrice = 500.00;
             int numberOfPeople = 2000;
 
-            // And now we use the adminInterface, where Vehicle can be found throught its email?
+            //Question:  And now we use the adminInterface, where Vehicle can be found throught its email?
             Contract.dto.Vehicle vehicle = ais.GetVehicle("anders@and.com");
 
 
@@ -121,7 +122,7 @@ namespace UnitTest.Vertical
         [TestMethod]
         public void CustomerCancelCustomerReservation()
         {
-            // This would be so much simpler if we had a GetReservation(int reservationid)
+            //Question:  This would be so much simpler if we had a GetReservation(int reservationid)
             Contract.contract.CustomerContract cis = getCustomerContract();
             List<Contract.dto.Reservation> resList = null;
             Contract.dto.Customer cust = new Contract.dto.Customer()
@@ -168,6 +169,7 @@ namespace UnitTest.Vertical
         #region Tests for Contract.contract.AdminstrationContract
 
         /*
+            Question: 
             Backend: Not sure what to test in the Create-methods. Should there be a difference between the parameter and the return value?
             Should we return an object so the frontend gets the id?
 
@@ -185,7 +187,7 @@ namespace UnitTest.Vertical
                 Mail = "anders@and.com"
             };
 
-            // Backend question: What do we do if this fails? return null or some random exception?
+            //Question:  Backend question: What do we do if this fails? return null or some random exception?
             Contract.dto.Customer returnValue = ais.CreateCustomer(newCustomer);
 
             Assert.AreEqual<Contract.dto.Customer>(newCustomer, returnValue);
@@ -260,14 +262,14 @@ namespace UnitTest.Vertical
             Contract.contract.AdminstrationContract ais = getAdministrationContract();
             Contract.dto.Ferry newFerry = new Contract.dto.Ferry()
             {
-                DockId = 1, // What is this? A secret class?
+                DockId = 1, //Question:  What is this? A secret class?
                 FerryId = 1,
                 Municipality = "Andeby",
                 Name = "Hugo",
                 PassengerCapacity = 7,
                 Size = "VERY BIG"
             };
-            // Backend: Since we have no exceptions in eto to throw, we just return null if something went wrong?
+            //Question:  Backend: Since we have no exceptions in eto to throw, we just return null if something went wrong?
             Contract.dto.Ferry returnValue = ais.CreateFerry(newFerry);
 
             Assert.AreEqual<Contract.dto.Ferry>(newFerry, returnValue);
@@ -282,7 +284,7 @@ namespace UnitTest.Vertical
             Contract.dto.Ferry newFerry = null;
             try
             {
-                //Backend: So a ferry have an email? 
+                //Question: Backend: So a ferry have an email? 
                 //Its missing in the DTO... 
                 //so we cant save it. 
                 //you can create millions of ferrys, but GetFerry will always fail...
@@ -304,7 +306,7 @@ namespace UnitTest.Vertical
             Contract.dto.Ferry newFerry = null;
             try
             {
-                //Backend: So a ferry have an email? 
+                //Question: Backend: So a ferry have an email? 
                 //Its missing in the DTO... 
                 //so we cant save it. 
                 //you can create millions of ferrys, but GetFerry will always fail...
@@ -640,7 +642,7 @@ namespace UnitTest.Vertical
         public void AdminstrationContractCreateRoute()
         {
             Contract.contract.AdminstrationContract ais = getAdministrationContract();
-            // So where do we Depart FROM?
+            //Question:  So where do we Depart FROM?
             Contract.dto.Route item = new Contract.dto.Route()
             {
                 Depature = DateTime.Now,
@@ -727,34 +729,40 @@ namespace UnitTest.Vertical
         [TestMethod]
         public void AdminstrationContractGetCustomers()
         {
+            //Question: Not in interface, but described in documentation
             Assert.Fail("Not in interface, but described in documentation");
         }
 
         [TestMethod]
         public void AdminstrationContractGetFerries()
         {
+            //Question: Not in interface, but described in documentation
             Assert.Fail("Not in interface, but described in documentation");
         }
 
         public void AdminstrationContractGetTrips()
         {
+            //Question: Not in interface, but described in documentation
             Assert.Fail("Not in interface, but described in documentation");
         }
 
         [TestMethod]
         public void AdminstrationContractGetReservations()
         {
+            //Question: Not in interface, but described in documentation
             Assert.Fail("Not in interface, but described in documentation");
         }
 
         public void AdminstrationContractGetVehicles()
         {
+            //Question: Not in interface, but described in documentation
             Assert.Fail("Not in interface, but described in documentation");
         }
 
         [TestMethod]
         public void AdminstrationContractGetRoutes()
         {
+            //Question: Not in interface, but described in documentation
             Assert.Fail("Not in interface, but described in documentation");
         }
         #endregion
